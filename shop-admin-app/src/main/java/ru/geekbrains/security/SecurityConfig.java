@@ -43,7 +43,7 @@ public class SecurityConfig {
                     .formLogin()
                     .loginPage("/login")
                     .loginProcessingUrl("/login_processing")
-                    .defaultSuccessUrl("/admin/user")
+                    .defaultSuccessUrl("/user")
                     .and()
                     .exceptionHandling()
                     .accessDeniedPage("/access_denied");
