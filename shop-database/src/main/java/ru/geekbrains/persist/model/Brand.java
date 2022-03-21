@@ -6,6 +6,9 @@ import javax.persistence.*;
 @Table(name = "brand")
 public class Brand {
 
+    public Brand() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -14,7 +17,7 @@ public class Brand {
     private String name;
 
 
-    public Brand() {
+    public Brand(Long id, String name) {
     }
 
     public Long getId() {

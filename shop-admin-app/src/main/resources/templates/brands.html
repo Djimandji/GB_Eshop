@@ -45,7 +45,7 @@
             </table>
         </div>
 
-        <div th:replace="fragments/paginator.html :: paginator(${categories}, ~{::paginatorLink})">
+        <div th:replace="fragments/paginator.html :: paginator(${brands}, ~{::paginatorLink})">
             <a th:fragment="paginatorLink" class="page-link"
                th:text="${num}"
                th:href="@{/brand(page=${num}, size=${data.size}, sortField=${param.sortField})}">1</a>

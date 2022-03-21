@@ -30,8 +30,13 @@ public class BrandController {
     }
 
     @GetMapping
-    public String listPage(Model model) {
-        model.addAttribute("brands", brandService.findAll());
+    public String listPage(@RequestParam("page") Optional<Integer> page,
+                           @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("sortField") Optional<String> sortField, Model model) {
+        model.addAttribute("brands", brandService.findAll(
+                page.orElse(1) - 1,
+                size.orElse(5),
+                sortField.filter(fld -> !fld.isBlank()).orElse("id")));
         return "brands";
     }
 
