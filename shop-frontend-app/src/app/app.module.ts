@@ -8,10 +8,12 @@ import { ProductInfoPageComponent } from './page/product-info-page/product-info-
 import { NavBarComponent } from './component/nav-bar/nav-bar.component';
 import { FooterComponent } from './component/footer/footer.component';
 import { ProductFilterComponent } from './component/product-filter/product-filter.component';
-import { PaginationComponent } from './component/pagination/pagination.component';
 import { ProductGalleryComponent } from './component/product-gallery/product-gallery.component';
+import { PaginationComponent } from './component/pagination/pagination.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
+import {CartPageComponent} from "./page/cart-page/cart-page.component";
+import {CartItemComponent} from "./component/cart-item/cart-item.component";
 
 @NgModule({
   declarations: [
@@ -21,8 +23,10 @@ import {FormsModule} from "@angular/forms";
     NavBarComponent,
     FooterComponent,
     ProductFilterComponent,
+    ProductGalleryComponent,
     PaginationComponent,
-    ProductGalleryComponent
+    CartPageComponent,
+    CartItemComponent,
   ],
   imports: [
     BrowserModule,
