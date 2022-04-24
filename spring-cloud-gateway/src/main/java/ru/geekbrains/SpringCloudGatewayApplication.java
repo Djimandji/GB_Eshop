@@ -1,4 +1,4 @@
-package ru.geekbrains.springcloudgateway;
+package ru.geekbrains;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
