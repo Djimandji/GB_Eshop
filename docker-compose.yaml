@@ -9,6 +9,7 @@ services:
     image: shop-frontend-app:latest
     ports:
       - 8080:80
+    restart: always
     depends_on:
       - shop-admin-app
       - shop-backend-api-app
@@ -24,9 +25,10 @@ services:
       - PROFILE=dock
       - CONFIG_SERVER_URL=http://cloud-config:8888
     command: bash -c "/apps/wait-for-service.sh db 3306 && /apps/wait-for-service.sh cloud-config 8888 && /apps/entrypoint.sh"
+    restart: always
     depends_on:
       - db
-      - memurai
+      - redis
       - cloud-config
 
   shop-backend-api-app:
@@ -37,9 +39,10 @@ services:
       - PROFILE=dock
       - CONFIG_SERVER_URL=http://cloud-config:8888
     command: bash -c "/apps/wait-for-service.sh rabbitmq 5672 && /apps/wait-for-service.sh db 3306 && /apps/wait-for-service.sh cloud-config 8888 && /apps/entrypoint.sh"
+    restart: always
     depends_on:
       - db
-      - memurai
+      - redis
       - cloud-config
       - shop-delivery-service
       - rabbitmq
@@ -54,6 +57,7 @@ services:
       - PROFILE=dock
       - CONFIG_SERVER_URL=http://cloud-config:8888
     command: bash -c "/apps/wait-for-service.sh db 3306 && /apps/wait-for-service.sh cloud-config 8888 && /apps/entrypoint.sh"
+    restart: always
     depends_on:
       - db
       - cloud-config
@@ -67,6 +71,12 @@ services:
       - rabbitmq
 
   db:
+    #    image: postgres
+    #    restart: always
+    #    environment:
+    #      POSTGRES_PASSWORD: password
+    #    ports:
+    #    - 5432:5432
 
     image: mysql:8.0.26
     environment:
@@ -76,7 +86,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
 
-  memurai:
+  redis:
     image: 'memurai/memurai-s3-develop:latest'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
@@ -88,5 +98,6 @@ services:
     ports:
       - 5672
       - 15672:15672
+
 volumes:
   mysql-data:
