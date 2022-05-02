@@ -18,6 +18,7 @@ import org.springframework.integration.jpa.dsl.Jpa;
 import org.springframework.integration.jpa.dsl.JpaUpdatingOutboundEndpointSpec;
 import org.springframework.integration.jpa.support.PersistMode;
 import org.springframework.messaging.MessageHandler;
+import ru.geekbrains.persist.model.Product;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.File;
@@ -55,7 +56,7 @@ public class ImportConfig {
     @Bean
     public JpaUpdatingOutboundEndpointSpec jpaPersistHandler() {
         return Jpa.outboundAdapter(this.entityManagerFactory)
-                .entityClass(Object.class) // TODO указать класс нужной сущности
+                .entityClass(Product.class) // TODO указать класс нужной сущности
                 .persistMode(PersistMode.PERSIST);
     }
 
@@ -66,7 +67,7 @@ public class ImportConfig {
                 .transform(new FileToStringTransformer())
                 .split(s -> s.delimiters("\n"))
                 .<String, Object>transform(str -> {
-                    return new Object();  // TODO преобразование строки в класс сущности импорта в для БД
+                    return new Product();  // TODO преобразование строки в класс сущности импорта в для БД ???
                 })
                 .handle(jpaPersistHandler(), ConsumerEndpointSpec::transactional)
                 .get();
