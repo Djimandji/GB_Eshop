@@ -21,8 +21,8 @@ public class PictureServiceImpl implements PictureService {
 
     private static final Logger logger = LoggerFactory.getLogger(PictureServiceImpl.class);
 
-    @Value("${picture.storage.path}")
-    private String storagePath;
+//    @Value("${picture.storage.path}")
+    private String storagePath = "D:/JAVA-projects/GB_EShop/storage";
 
     private final PictureRepository pictureRepository;
 
