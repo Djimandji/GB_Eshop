@@ -1,13 +1,13 @@
-package ru.geekbrains.springcloudgateway;
+package ru.geekbrains;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringCloudGatewayApplication {
+public class ShopPictureServiceApiApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringCloudGatewayApplication.class, args);
+        SpringApplication.run(ShopPictureServiceApiApplication.class, args);
     }
 
 }

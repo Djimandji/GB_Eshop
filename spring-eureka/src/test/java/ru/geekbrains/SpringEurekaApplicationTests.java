@@ -1,10 +1,10 @@
-package com.example.springcloudconfig;
+package ru.geekbrains;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 //@SpringBootTest
-class SpringCloudConfigApplicationTests {
+class SpringEurekaApplicationTests {
 
     @Test
     void contextLoads() {
