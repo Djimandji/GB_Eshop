@@ -2,7 +2,10 @@ package ru.geekbrains.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.controller.dto.OrderDto;
 import ru.geekbrains.controller.dto.OrderLineItemDto;
@@ -13,6 +16,7 @@ import ru.geekbrains.persist.model.Order;
 import ru.geekbrains.persist.model.OrderLineItem;
 import ru.geekbrains.persist.model.Product;
 import ru.geekbrains.persist.model.User;
+import ru.geekbrains.service.dto.OrderStatus;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -32,17 +36,24 @@ public class OrderServiceImpl implements OrderService {
 
     private final ProductRepository productRepository;
 
+    private final SimpMessagingTemplate template;
+
+    private final RabbitTemplate rabbitTemplate;
+
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
                             CartService cartService,
                             UserRepository userRepository,
-                            ProductRepository productRepository
+                            ProductRepository productRepository,
+                            SimpMessagingTemplate template, RabbitTemplate rabbitTemplate
                             ) {
         this.orderRepository = orderRepository;
         this.cartService = cartService;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.template = template;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public List<OrderDto> findOrdersByUsername(String username) {
@@ -99,20 +110,20 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderLineItems(orderLineItems);
         orderRepository.save(order);
         cartService.clear();
-
-        new Thread(() -> {
-            for (Order.OrderStatus status : Order.OrderStatus.values()) {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        rabbitTemplate.convertAndSend("order.exchange", "new_order",
+                new OrderStatus(order.getId(), order.getStatus().toString()));
     }
 
     private Product findProductById(Long id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No product with id"));
+    }
+
+    @RabbitListener(queues = "processed.order.queue")
+    public void receiver(OrderStatus orderStatus) {
+        logger.info("New order status received id = {}, status = {}",
+                orderStatus.getOrderId(), orderStatus.getStatus());
+
+        template.convertAndSend("/order_out/order", orderStatus);
     }
 }
